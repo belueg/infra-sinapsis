@@ -3,7 +3,7 @@ resource "aws_db_instance" "sinapsisVet_db" {
   engine               = "postgres"
   engine_version       = "15"
   instance_class       = "db.t3.micro"
-  name                 = "vet_acpc"
+  db_name                 = "vet_acpc"
   username             = "vet_acpc_user"
   password             =  var.db_password
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
@@ -12,8 +12,8 @@ resource "aws_db_instance" "sinapsisVet_db" {
 }
 
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "sinapsisVet_db_subnet_group"
-  subnet_ids = [var.subnet_id]
+  name       = "sinapsisvet_db_subnet_group"
+  subnet_ids = [var.subnet_id, var.subnet_id2]
 }
 
 resource "aws_security_group" "sinapsisVet_sg_rds" {
@@ -25,7 +25,7 @@ resource "aws_security_group" "sinapsisVet_sg_rds" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    # cidr_blocks = ["tu_rango_ip/32"] // bastion
+    security_groups  = [var.bastion_sg_id]
   }
 
   egress {
